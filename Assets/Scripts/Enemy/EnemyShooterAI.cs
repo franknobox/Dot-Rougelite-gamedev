@@ -1,7 +1,9 @@
 using UnityEngine;
+using Spine.Unity;
 
 /// <summary>
 /// 远程射击敌人 AI - 保持距离并射击玩家
+/// 支持Spine Mecanim动画系统
 /// </summary>
 public class EnemyShooterAI : EnemyBase
 {
@@ -9,6 +11,10 @@ public class EnemyShooterAI : EnemyBase
     [SerializeField]
     [Tooltip("子弹预制体")]
     private GameObject projectilePrefab;
+
+    [SerializeField]
+    [Tooltip("开火位置（子弹生成点），如果不设置则从敌人中心发射")]
+    private Transform firePoint;
 
     [SerializeField]
     [Tooltip("射程范围")]
@@ -33,33 +39,37 @@ public class EnemyShooterAI : EnemyBase
     // 射击计时器
     private float nextFireTime = 0f;
     
-    // 动画组件
+    // Spine Mecanim组件
     // Animator 参数约定：
     // - Bool "IsMoving": 移动时为 true
     // - Trigger "Attack": 攻击瞬间触发
-    // - Trigger "Die": 死亡时触发（在 EnemyBase 中调用）
+    private SkeletonMecanim skeletonMecanim;
     private Animator anim;
-    private SpriteRenderer sr;
     
-    // 移动状态跟踪
-    private Vector2 lastPosition;
+    // FirePoint的初始X位置（用于翻转）
+    private float firePointInitialX;
+    private bool firePointInitialized = false;
 
     protected override void Start()
     {
         base.Start();
 
-        // 获取动画组件（从子物体中查找）
-        anim = GetComponentInChildren<Animator>();
-        sr = GetComponentInChildren<SpriteRenderer>();
+        // 获取Spine Mecanim组件（从子物体中查找）
+        skeletonMecanim = GetComponentInChildren<SkeletonMecanim>();
         
-        // 安全检查
-        if (anim == null)
+        if (skeletonMecanim != null)
         {
-            Debug.LogWarning($"{gameObject.name}: 未找到 Animator 组件，动画将不可用");
+            // 获取Animator组件（SkeletonMecanim会自动添加）
+            anim = skeletonMecanim.GetComponent<Animator>();
+            
+            if (anim == null)
+            {
+                Debug.LogError($"{gameObject.name}: SkeletonMecanim上未找到 Animator 组件！");
+            }
         }
-        if (sr == null)
+        else
         {
-            Debug.LogWarning($"{gameObject.name}: 未找到 SpriteRenderer 组件，翻转将不可用");
+            Debug.LogError($"{gameObject.name}: 未找到 SkeletonMecanim 组件！请在子物体上添加SkeletonMecanim组件。");
         }
 
         // 查找玩家
@@ -73,14 +83,26 @@ public class EnemyShooterAI : EnemyBase
             Debug.LogWarning($"{gameObject.name}: 未找到标记为 'Player' 的物体！");
         }
         
-        // 初始化位置
-        lastPosition = transform.position;
+        // 记录FirePoint的初始位置
+        if (firePoint != null)
+        {
+            firePointInitialX = firePoint.localPosition.x;
+            firePointInitialized = true;
+        }
     }
 
     private void Update()
     {
         // 如果找不到玩家，不执行 AI
-        if (player == null) return;
+        if (player == null)
+        {
+            // 停止移动动画
+            if (anim != null)
+            {
+                anim.SetBool("IsMoving", false);
+            }
+            return;
+        }
 
         // 计算与玩家的距离
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
@@ -102,28 +124,28 @@ public class EnemyShooterAI : EnemyBase
     {
         Vector2 currentPos = transform.position;
         Vector2 targetPos = player.position;
-        bool isMoving = false;
+        bool shouldMove = false;
 
         if (distanceToPlayer > shootingRange)
         {
             // 距离太远，靠近玩家
             Vector2 newPos = Vector2.MoveTowards(currentPos, targetPos, moveSpeed * Time.deltaTime);
             transform.position = newPos;
-            isMoving = true;
+            shouldMove = true;
         }
         else if (distanceToPlayer < keepDistance && retreatWhileShooting)
         {
             // 距离太近，后退
             Vector2 newPos = Vector2.MoveTowards(currentPos, targetPos, -moveSpeed * 0.5f * Time.deltaTime);
             transform.position = newPos;
-            isMoving = true;
+            shouldMove = true;
         }
         // 在 keepDistance 和 shootingRange 之间时，停止移动
         
         // 更新移动动画
         if (anim != null)
         {
-            anim.SetBool("IsMoving", isMoving);
+            anim.SetBool("IsMoving", shouldMove);
         }
     }
 
@@ -161,13 +183,16 @@ public class EnemyShooterAI : EnemyBase
             anim.SetTrigger("Attack");
         }
         
+        // 确定子弹生成位置
+        Vector3 spawnPosition = firePoint != null ? firePoint.position : transform.position;
+        
         // 实例化子弹
-        GameObject projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
+        GameObject projectile = Instantiate(projectilePrefab, spawnPosition, Quaternion.identity);
 
         // 计算朝向玩家的方向
         Vector2 direction = (player.position - transform.position).normalized;
 
-        // 设置子弹方向（假设子弹有 Projectile 脚本）
+        // 设置子弹方向
         Projectile projectileScript = projectile.GetComponent<Projectile>();
         if (projectileScript != null)
         {
@@ -183,7 +208,7 @@ public class EnemyShooterAI : EnemyBase
             }
         }
 
-        Debug.Log($"{gameObject.name} 发射了子弹");
+        Debug.Log($"{gameObject.name} 从 {spawnPosition} 发射了子弹");
     }
 
     /// <summary>
@@ -191,16 +216,34 @@ public class EnemyShooterAI : EnemyBase
     /// </summary>
     private void FacePlayer()
     {
-        if (sr == null || player == null) return;
+        if (skeletonMecanim == null || player == null) return;
 
-        // 根据玩家位置翻转精灵
+        // 根据玩家位置翻转骨骼和FirePoint
         if (player.position.x < transform.position.x)
         {
-            sr.flipX = true; // 向左
+            // 向左
+            skeletonMecanim.Skeleton.ScaleX = -1;
+            
+            // 翻转FirePoint（镜像X坐标）
+            if (firePoint != null && firePointInitialized)
+            {
+                Vector3 pos = firePoint.localPosition;
+                pos.x = -Mathf.Abs(firePointInitialX); // 使用负值
+                firePoint.localPosition = pos;
+            }
         }
         else
         {
-            sr.flipX = false; // 向右
+            // 向右
+            skeletonMecanim.Skeleton.ScaleX = 1;
+            
+            // 翻转FirePoint（使用原始X坐标）
+            if (firePoint != null && firePointInitialized)
+            {
+                Vector3 pos = firePoint.localPosition;
+                pos.x = Mathf.Abs(firePointInitialX); // 使用正值
+                firePoint.localPosition = pos;
+            }
         }
     }
 

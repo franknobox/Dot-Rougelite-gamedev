@@ -67,6 +67,19 @@ public class Projectile : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        HandleCollision(other.gameObject);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        HandleCollision(collision.gameObject);
+    }
+
+    /// <summary>
+    /// 处理碰撞逻辑（统一处理Trigger和Collision）
+    /// </summary>
+    private void HandleCollision(GameObject other)
+    {
         // 检查是否击中玩家
         if (other.CompareTag("Player"))
         {
@@ -81,8 +94,8 @@ public class Projectile : MonoBehaviour
             // 销毁子弹
             Destroy(gameObject);
         }
-        // 检查是否击中墙壁或障碍物
-        else if (other.CompareTag("Wall") || other.CompareTag("Obstacle"))
+        // 检查是否击中墙壁(障碍)
+        else if (other.CompareTag("Wall"))
         {
             // 销毁子弹
             Destroy(gameObject);
