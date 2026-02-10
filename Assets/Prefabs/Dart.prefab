@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4332334667911261980}
   m_Layer: 0
   m_Name: Dart
-  m_TagString: Untagged
+  m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -97,3 +97,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e1a8d61e1d31464182b05591b152509, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attackType: 1
+  weaponCollider: {fileID: 0}
+  projectilePrefab: {fileID: 0}
+  firePoint: {fileID: 0}
+  attackDuration: 0.2

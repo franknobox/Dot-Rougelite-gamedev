@@ -1,0 +1,97 @@
+
+robot1.png
+size: 3619,1584
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+backwheel
+  rotate: true
+  xy: 910, 372
+  size: 65, 67
+  orig: 67, 69
+  offset: 1, 1
+  index: -1
+body
+  rotate: true
+  xy: 2220, 2
+  size: 780, 1107
+  orig: 786, 1110
+  offset: 3, 2
+  index: -1
+frontwheel
+  rotate: true
+  xy: 857, 527
+  size: 188, 196
+  orig: 190, 198
+  offset: 1, 1
+  index: -1
+head
+  rotate: false
+  xy: 2, 113
+  size: 617, 602
+  orig: 630, 625
+  offset: 13, 23
+  index: -1
+left arm
+  rotate: true
+  xy: 1111, 8
+  size: 722, 1107
+  orig: 727, 1110
+  offset: 2, 2
+  index: -1
+left leg
+  rotate: true
+  xy: 2220, 784
+  size: 798, 1397
+  orig: 802, 1401
+  offset: 2, 2
+  index: -1
+lunzi
+  rotate: false
+  xy: 621, 466
+  size: 234, 249
+  orig: 238, 251
+  offset: 2, 1
+  index: -1
+right leg
+  rotate: true
+  xy: 2, 717
+  size: 865, 1107
+  orig: 870, 1110
+  offset: 2, 2
+  index: -1
+rightarm1
+  rotate: false
+  xy: 621, 290
+  size: 287, 174
+  orig: 290, 177
+  offset: 1, 1
+  index: -1
+rightarm2
+  rotate: true
+  xy: 1111, 732
+  size: 850, 1107
+  orig: 855, 1110
+  offset: 2, 2
+  index: -1
+wheel1
+  rotate: true
+  xy: 621, 140
+  size: 148, 195
+  orig: 151, 197
+  offset: 2, 1
+  index: -1
+wheel2
+  rotate: false
+  xy: 910, 439
+  size: 65, 86
+  orig: 67, 88
+  offset: 1, 1
+  index: -1
+wheel3
+  rotate: true
+  xy: 818, 160
+  size: 128, 96
+  orig: 130, 98
+  offset: 1, 1
+  index: -1

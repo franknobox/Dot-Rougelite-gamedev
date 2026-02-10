@@ -1,0 +1,27 @@
+
+flyrobot.png
+size: 1926,933
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+body
+  rotate: false
+  xy: 2, 2
+  size: 1650, 929
+  orig: 1664, 932
+  offset: 11, 2
+  index: -1
+highlight
+  rotate: true
+  xy: 1654, 125
+  size: 121, 270
+  orig: 123, 272
+  offset: 1, 1
+  index: -1
+wings
+  rotate: true
+  xy: 1654, 248
+  size: 683, 218
+  orig: 685, 221
+  offset: 1, 2
+  index: -1

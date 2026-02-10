@@ -14,13 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: "\u5251"
   icon: {fileID: -6485358305038788630, guid: b852b9315af08ac40bfb961c9b3c28c9, type: 3}
-  weaponPrefab: {fileID: 3144796644817395891, guid: 39db824ba604c8347afc0c6a79fcf5b7, type: 3}
+  weaponPrefab: {fileID: 2335099495097792356, guid: 4c9a2c34db4ce6248ba0e04beabe4287, type: 3}
   damageType: 1
   baseDamage: 2
   attackRate: 2
-  maxDurability: 10
+  maxDurability: 20
   shapePattern:
   - {x: 0, y: 0}
   - {x: 0, y: 1}
   - {x: 0, y: 2}
+  - {x: 0, y: 3}
+  - {x: 1, y: 2}
+  - {x: -1, y: 2}
   dropDotCount: 3

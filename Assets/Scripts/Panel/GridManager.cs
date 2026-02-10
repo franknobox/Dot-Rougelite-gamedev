@@ -359,10 +359,21 @@ public class GridManager : MonoBehaviour
             }
         }
 
-        // TODO: 实例化武器到游戏场景中
-        // GameObject weaponObj = Instantiate(weapon.weaponPrefab);
-        // WeaponController controller = weaponObj.GetComponent<WeaponController>();
-        // controller.Initialize(weapon);
+        // 将武器装备到玩家手上
+        SwordmanController player = FindObjectOfType<SwordmanController>();
+        if (player != null && weapon.weaponPrefab != null)
+        {
+            player.EquipWeapon(weapon.weaponPrefab, weapon);
+            Debug.Log($"武器 {weapon.weaponName} 已装备到玩家手上！");
+        }
+        else if (player == null)
+        {
+            Debug.LogError("未找到玩家控制器（SwordmanController），无法装备武器！");
+        }
+        else if (weapon.weaponPrefab == null)
+        {
+            Debug.LogError($"武器 {weapon.weaponName} 的 weaponPrefab 为空，无法装备！");
+        }
 
         Debug.Log($"武器 {weapon.weaponName} 合成成功！");
     }

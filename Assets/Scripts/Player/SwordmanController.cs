@@ -16,11 +16,14 @@ public class SwordmanController : MonoBehaviour
     public KeyCode attackKey = KeyCode.Mouse0;
     
     [Header("武器设置")]
-    [Tooltip("武器数据")]
+    [Tooltip("武器数据（可选，用于初始武器）")]
     public WeaponData weaponData;
     
-    [Tooltip("武器控制器（自动从子物体获取）")]
-    private WeaponController weaponController;
+    [Tooltip("武器挂载点（手部位置）")]
+    public Transform handTransform;
+    
+    // 当前武器的脚本引用
+    private WeaponController currentWeapon;
 
     // 组件引用
     private Rigidbody2D rb;
@@ -42,22 +45,40 @@ public class SwordmanController : MonoBehaviour
             Debug.LogError("SwordmanController 需要 Animator 组件！");
         }
         
-        // 获取子物体中的武器控制器
-        weaponController = GetComponentInChildren<WeaponController>();
-        if (weaponController == null)
+        // 如果没有设置手部挂载点，尝试自动查找
+        if (handTransform == null)
         {
-            Debug.LogWarning("SwordmanController: 未找到 WeaponController 组件！");
+            // 尝试查找名为 "Hand" 或 "WeaponMount" 的子物体
+            Transform hand = transform.Find("Hand");
+            if (hand == null) hand = transform.Find("WeaponMount");
+            
+            if (hand != null)
+            {
+                handTransform = hand;
+                Debug.Log($"自动找到手部挂载点: {handTransform.name}");
+            }
+            else
+            {
+                Debug.LogWarning("SwordmanController: 未设置 handTransform！请在 Inspector 中设置或创建名为 'Hand' 的子物体。");
+            }
+        }
+        
+        // 获取子物体中的武器控制器（用于初始武器）
+        currentWeapon = GetComponentInChildren<WeaponController>();
+        if (currentWeapon == null)
+        {
+            Debug.LogWarning("SwordmanController: 未找到初始武器！");
         }
     }
     
     private void Start()
     {
-        // 初始化武器
-        if (weaponController != null && weaponData != null)
+        // 初始化初始武器
+        if (currentWeapon != null && weaponData != null)
         {
-            weaponController.Initialize(weaponData);
+            currentWeapon.Initialize(weaponData);
         }
-        else if (weaponController != null && weaponData == null)
+        else if (currentWeapon != null && weaponData == null)
         {
             Debug.LogWarning("SwordmanController: weaponData 未设置！请在 Inspector 中设置武器数据。");
         }
@@ -125,9 +146,9 @@ public class SwordmanController : MonoBehaviour
         animator.SetTrigger(AttackTrigger);
         
         // 执行武器攻击
-        if (weaponController != null)
+        if (currentWeapon != null)
         {
-            weaponController.PerformAttack();
+            currentWeapon.PerformAttack();
         }
     }
 
@@ -154,5 +175,60 @@ public class SwordmanController : MonoBehaviour
     public void OnAttackEnd()
     {
         isAttacking = false;
+    }
+    
+    /// <summary>
+    /// 装备新武器（运行时动态装备）
+    /// </summary>
+    /// <param name="weaponPrefab">武器预制体</param>
+    /// <param name="data">武器数据（可选，如果为null则不初始化）</param>
+    public void EquipWeapon(GameObject weaponPrefab, WeaponData data = null)
+    {
+        if (handTransform == null)
+        {
+            Debug.LogError("SwordmanController: handTransform 未设置，无法装备武器！");
+            return;
+        }
+        
+        if (weaponPrefab == null)
+        {
+            Debug.LogError("SwordmanController: weaponPrefab 为空，无法装备武器！");
+            return;
+        }
+        
+        // 清理旧武器：销毁手部挂载点下的所有子物体
+        foreach (Transform child in handTransform)
+        {
+            Destroy(child.gameObject);
+            Debug.Log($"已销毁旧武器: {child.name}");
+        }
+        
+        // 生成新武器
+        GameObject newWeaponObj = Instantiate(weaponPrefab, handTransform);
+        
+        // 归位：确保武器贴合手部
+        newWeaponObj.transform.localPosition = Vector3.zero;
+        newWeaponObj.transform.localRotation = Quaternion.identity;
+        
+        // 获取武器控制器组件
+        currentWeapon = newWeaponObj.GetComponent<WeaponController>();
+        
+        if (currentWeapon == null)
+        {
+            Debug.LogError($"SwordmanController: 武器预制体 '{weaponPrefab.name}' 缺少 WeaponController 组件！");
+            Destroy(newWeaponObj);
+            return;
+        }
+        
+        // 如果提供了武器数据，则初始化
+        if (data != null)
+        {
+            currentWeapon.Initialize(data);
+            Debug.Log($"成功装备武器: {weaponPrefab.name}，已使用 WeaponData 初始化");
+        }
+        else
+        {
+            Debug.Log($"成功装备武器: {weaponPrefab.name}，使用预制体默认设置");
+        }
     }
 }
