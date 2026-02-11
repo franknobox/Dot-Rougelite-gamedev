@@ -1062,6 +1062,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 9100000, guid: 2b112fd0784d50c46ac353d43c9d55ee, type: 2}
     - target: {fileID: 1345169698654787948, guid: bb3824e6e6bf9c8439737ac30bbe0e3c, type: 3}
+      propertyPath: m_Mass
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1345169698654787948, guid: bb3824e6e6bf9c8439737ac30bbe0e3c, type: 3}
+      propertyPath: m_LinearDrag
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1345169698654787948, guid: bb3824e6e6bf9c8439737ac30bbe0e3c, type: 3}
       propertyPath: m_CollisionDetection
       value: 0
       objectReference: {fileID: 0}
@@ -1198,8 +1206,8 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
+  m_Mass: 10
+  m_LinearDrag: 1
   m_AngularDrag: 0.05
   m_GravityScale: 0
   m_Material: {fileID: 0}
