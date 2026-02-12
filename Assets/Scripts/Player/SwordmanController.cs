@@ -89,6 +89,9 @@ public class SwordmanController : MonoBehaviour
         // 检测攻击输入
         if (Input.GetKeyDown(attackKey) && !isAttacking)
         {
+            // 暂停时不攻击
+            if (PauseManager.isPaused) return;
+
             Attack();
         }
 
