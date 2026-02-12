@@ -129,11 +129,14 @@ public class PlayerHealth : MonoBehaviour
     {
         Debug.Log("玩家死亡！");
         
-        // TODO: 实现死亡逻辑
-        // 例如：播放死亡动画、显示游戏结束界面等
+        // 触发游戏结束
+        if (GameOverManager.instance != null)
+        {
+            GameOverManager.instance.GameOver();
+        }
         
-        // 临时：销毁玩家物体
-        // Destroy(gameObject);
+        // 销毁玩家物体 (或者让他只是隐藏/禁用控制)
+        Destroy(gameObject);
     }
 
     /// <summary>

@@ -33,6 +33,11 @@ public class EnemyBase : MonoBehaviour
     [Tooltip("受击闪白持续时间")]
     protected float flashDuration = 0.1f;
 
+    [Header("得分设置")]
+    [SerializeField]
+    [Tooltip("击杀此敌人获得的分数")]
+    protected int scoreValue = 10;
+
     // 当前生命值
     protected float currentHealth;
     
@@ -116,6 +121,12 @@ public class EnemyBase : MonoBehaviour
     protected virtual void Die()
     {
         Debug.Log($"{gameObject.name} 已死亡！");
+
+        // 增加分数
+        if (GameOverManager.instance != null)
+        {
+            GameOverManager.instance.AddScore(scoreValue);
+        }
 
         // 掉落 Dot
         DropDots();

@@ -24,8 +24,11 @@ public class WeaponData : ScriptableObject
     [Tooltip("基础伤害")]
     public float baseDamage;
     
-    [Tooltip("攻击速率")]
+    [Tooltip("攻击速率 (每次攻击的间隔时间)")]
     public float attackRate;
+
+    [Tooltip("子弹飞行速度 (仅远程武器有效)")]
+    public float projectileSpeed = 10f;
     
     [Tooltip("最大耐久度")]
     public int maxDurability;

@@ -17,6 +17,13 @@ public class PauseManager : MonoBehaviour
     [Tooltip("主菜单场景的名称")]
     public string mainMenuScene = "Menu";
 
+    [Header("Transition")]
+    [Tooltip("黑屏用到的 CanvasGroup (用来控制黑屏面板)")]
+    public CanvasGroup fadeCanvasGroup;
+
+    [Tooltip("过渡时间")]
+    public float fadeDuration = 1f;
+
     // 全局静态变量，方便其他脚本查询是否暂停
     public static bool isPaused = false;
 
@@ -126,7 +133,34 @@ public class PauseManager : MonoBehaviour
     /// </summary>
     public void LoadMainMenu()
     {
-        // 重要：在加载场景前恢复时间流速，否则新场景也会是暂停的
+        StartCoroutine(TransitionToMainMenu());
+    }
+
+    private System.Collections.IEnumerator TransitionToMainMenu()
+    {
+        // 确保使用未缩放的时间，因为此时游戏是暂停的 (Time.timeScale = 0)
+        if (fadeCanvasGroup != null)
+        {
+            // 确保 Game Object 是激活的，否则看不见
+            fadeCanvasGroup.gameObject.SetActive(true);
+            
+            // 确保渲染在最上层 (如果它和 PausePanel 同级)
+            fadeCanvasGroup.transform.SetAsLastSibling();
+
+            fadeCanvasGroup.blocksRaycasts = true; // 阻挡输入
+            fadeCanvasGroup.alpha = 0f; // 确保初始为透明
+
+            float timer = 0f;
+            while (timer < fadeDuration)
+            {
+                timer += Time.unscaledDeltaTime; // 使用 unscaledDeltaTime
+                fadeCanvasGroup.alpha = Mathf.MoveTowards(0f, 1f, timer / fadeDuration);
+                yield return null;
+            }
+            fadeCanvasGroup.alpha = 1f;
+        }
+
+        // 恢复时间流速
         Time.timeScale = 1f;
         isPaused = false;
 

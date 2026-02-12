@@ -70,11 +70,23 @@ public class WeaponController : MonoBehaviour
         Debug.Log($"[WeaponController] 武器已初始化: {data.weaponName}, 类型: {attackType}, 伤害: {data.baseDamage}, 耐久: {CurrentDurability}");
     }
 
+    /// <summary>
+    /// 获取攻击速率 (间隔时间)
+    /// </summary>
+    public float GetAttackRate()
+    {
+        return weaponData != null ? weaponData.attackRate : 0.5f; // 默认 0.5s
+    }
+
 
     /// <summary>
     /// 执行攻击（统一接口）
     /// </summary>
-    public void PerformAttack()
+    /// <summary>
+    /// 执行攻击（统一接口）
+    /// </summary>
+    /// <param name="direction">攻击方向 (可选，默认为空则使用默认方向)</param>
+    public void PerformAttack(Vector2? direction = null)
     {
         if (weaponData == null)
         {
@@ -90,7 +102,7 @@ public class WeaponController : MonoBehaviour
                 break;
                 
             case WeaponAttackType.Ranged:
-                PerformRangedAttack();
+                PerformRangedAttack(direction);
                 break;
         }
     }
@@ -126,7 +138,10 @@ public class WeaponController : MonoBehaviour
     /// <summary>
     /// 执行远程攻击
     /// </summary>
-    private void PerformRangedAttack()
+    /// <summary>
+    /// 执行远程攻击
+    /// </summary>
+    private void PerformRangedAttack(Vector2? direction)
     {
         Debug.Log($"[WeaponController] 执行远程攻击");
         
@@ -140,10 +155,20 @@ public class WeaponController : MonoBehaviour
         // 确定发射位置
         Vector3 spawnPosition = firePoint != null ? firePoint.position : transform.position;
         
-        // 计算发射方向（使用玩家朝向）
-        Vector2 fireDirection = transform.parent != null ? 
-            new Vector2(transform.parent.localScale.x > 0 ? -1 : 1, 0) : 
-            Vector2.right;
+        // 计算发射方向
+        Vector2 fireDirection;
+        if (direction.HasValue)
+        {
+            // 如果指定了方向（例如鼠标指向），则使用该方向
+            fireDirection = direction.Value.normalized;
+        }
+        else
+        {
+            // 否则使用默认朝向（玩家面朝向）
+            fireDirection = transform.parent != null ? 
+                new Vector2(transform.parent.localScale.x > 0 ? -1 : 1, 0) : 
+                Vector2.right;
+        }
         
         // 实例化投射物
         GameObject projectile = Instantiate(projectilePrefab, spawnPosition, Quaternion.identity);
@@ -152,6 +177,7 @@ public class WeaponController : MonoBehaviour
         ProjectileController projectileController = projectile.GetComponent<ProjectileController>();
         if (projectileController != null)
         {
+            // 初始化投射物 (传入 tag 和方向)
             projectileController.Initialize(weaponData, fireDirection);
         }
         else

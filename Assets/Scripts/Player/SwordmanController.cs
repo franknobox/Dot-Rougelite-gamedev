@@ -30,6 +30,7 @@ public class SwordmanController : MonoBehaviour
     private Animator animator;
     private Vector2 moveInput;
     private bool isAttacking = false;
+    private float lastAttackTime = -999f; // 上次攻击时间
     
     // Animator 参数名称
     private static readonly int SpeedParam = Animator.StringToHash("Speed");
@@ -92,7 +93,12 @@ public class SwordmanController : MonoBehaviour
             // 暂停时不攻击
             if (PauseManager.isPaused) return;
 
-            Attack();
+            // 检查冷却时间
+            float attackRate = currentWeapon != null ? currentWeapon.GetAttackRate() : 0.5f;
+            if (Time.time >= lastAttackTime + attackRate)
+            {
+                Attack();
+            }
         }
 
         // 获取 WASD 输入
@@ -141,9 +147,15 @@ public class SwordmanController : MonoBehaviour
     /// <summary>
     /// 执行攻击
     /// </summary>
+    /// <summary>
+    /// 执行攻击
+    /// </summary>
     private void Attack()
     {
         if (animator == null) return;
+
+        // 记录攻击时间
+        lastAttackTime = Time.time;
 
         // 触发攻击动画
         animator.SetTrigger(AttackTrigger);
@@ -151,7 +163,15 @@ public class SwordmanController : MonoBehaviour
         // 执行武器攻击
         if (currentWeapon != null)
         {
-            currentWeapon.PerformAttack();
+            // 计算鼠标指向的方向
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mousePos.z = 0f; // 确保在 2D 平面上
+            
+            // 使用手部位置或玩家位置作为起点
+            Vector3 startPos = handTransform != null ? handTransform.position : transform.position;
+            Vector2 direction = (mousePos - startPos).normalized;
+
+            currentWeapon.PerformAttack(direction);
         }
     }
 

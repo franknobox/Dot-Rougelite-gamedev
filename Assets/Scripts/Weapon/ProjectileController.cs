@@ -39,7 +39,7 @@ public class ProjectileController : MonoBehaviour
     public void Initialize(WeaponData data, Vector2 direction)
     {
         // 记录武器数据
-        speed = data.attackRate; // 使用 attackRate 作为速度
+        speed = data.projectileSpeed; // 使用专门的 projectileSpeed
         damage = data.baseDamage;
         damageType = data.damageType;
         durabilityCost = 1; // 每个飞镖消耗1点耐久
