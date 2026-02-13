@@ -98,7 +98,7 @@ public class EnemyShooterAI : EnemyBase
             // 停止移动动画
             if (anim != null)
             {
-                anim.SetBool("IsMoving", false);
+                // anim.SetBool("IsMoving", false);
             }
             return;
         }
@@ -144,7 +144,7 @@ public class EnemyShooterAI : EnemyBase
         // 更新移动动画
         if (anim != null)
         {
-            anim.SetBool("IsMoving", shouldMove);
+            // anim.SetBool("IsMoving", shouldMove);
         }
     }
 

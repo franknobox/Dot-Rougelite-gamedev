@@ -1654,7 +1654,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -80, y: 60}
+  m_AnchoredPosition: {x: -117, y: 76}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &961447596
@@ -1688,7 +1688,7 @@ MonoBehaviour:
   m_text: New Text
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e63dae973e0787845a3bb28796403096, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 6111439452842949199, guid: e63dae973e0787845a3bb28796403096, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1748,7 +1748,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -155.15465, w: -117.59076}
+  m_margin: {x: 0, y: 0, z: -217.51521, w: -142.53494}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 1
@@ -1795,8 +1795,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -510, y: 166}
-  m_SizeDelta: {x: -1246.3728, y: -724.6903}
+  m_AnchoredPosition: {x: -529, y: 164.71}
+  m_SizeDelta: {x: -1299.7107, y: -675.37}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1026194541
 MonoBehaviour:
@@ -3368,6 +3368,7 @@ GameObject:
   - component: {fileID: 1651791021}
   - component: {fileID: 1651791022}
   - component: {fileID: 1651791023}
+  - component: {fileID: 1651791024}
   m_Layer: 0
   m_Name: System_DungeonManager
   m_TagString: Untagged
@@ -3511,6 +3512,23 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1651791024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1651791020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9aa8f4a02e4373b478a418bd1b16b035, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  showConsole: 1
+  maxLogCount: 30
+  fontSize: 16
+  widthRatio: 0.3
+  heightRatio: 0.125
 --- !u!1 &1715229014
 GameObject:
   m_ObjectHideFlags: 0
@@ -3676,8 +3694,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c987e40f4622ba64fac9a9a1cf62134a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tutorialContent: "\u6B22\u8FCE\u6765\u5230\u5730\u7262\uFF01\n\u4F7F\u7528 WASD
-    \u79FB\u52A8\n\u5DE6\u952E \u653B\u51FB\nTab \u6253\u5F00\u624B\u8868\u5408\u6210"
+  tutorialContent: "\u6B22\u8FCE\u6765\u5230\u70B9\u9635\u6B66\u88C5!\n\u79FB\u52A8\uFF1AWASD 
+    \u653B\u51FB\uFF1A\u9F20\u6807\n\u6309Tab \u6253\u5F00\u624B\u8868\u5408\u6210\u6B66\u5668\n\u70B9\u51FB\u62FC\u88C5\u76D8\u653E\u7F6EDot"
   showOnce: 0
 --- !u!4 &1772079045 stripped
 Transform:
