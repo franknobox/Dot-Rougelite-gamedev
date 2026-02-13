@@ -18,6 +18,11 @@ public class MainMenuManager : MonoBehaviour
     [Tooltip("过渡时间")]
     public float fadeDuration = 1f;
 
+    [Header("Audio")]
+    [Tooltip("背景音乐")]
+    public AudioClip bgmClip;
+    private AudioSource audioSource;
+
     void Start()
     {
         // 确保 settingsPanel 一开始是隐藏的
@@ -31,6 +36,21 @@ public class MainMenuManager : MonoBehaviour
         {
             fadeCanvasGroup.alpha = 0f;
             fadeCanvasGroup.blocksRaycasts = false;
+        }
+
+        // 播放 BGM
+        if (bgmClip != null)
+        {
+            audioSource = GetComponent<AudioSource>();
+            if (audioSource == null)
+            {
+                audioSource = gameObject.AddComponent<AudioSource>();
+            }
+            audioSource.clip = bgmClip;
+            audioSource.loop = true;
+            audioSource.playOnAwake = false;
+            audioSource.volume = 0.3f; 
+            audioSource.Play();
         }
     }
 
@@ -49,10 +69,21 @@ public class MainMenuManager : MonoBehaviour
 
             // 第二步 (淡出/变黑): 平滑插值
             float timer = 0f;
+            float startVolume = (audioSource != null) ? audioSource.volume : 1f;
+
             while (timer < fadeDuration)
             {
                 timer += Time.deltaTime;
-                fadeCanvasGroup.alpha = Mathf.MoveTowards(0f, 1f, timer / fadeDuration);
+                float progress = timer / fadeDuration;
+
+                fadeCanvasGroup.alpha = Mathf.MoveTowards(0f, 1f, progress);
+                
+                // BGM 淡出
+                if (audioSource != null)
+                {
+                    audioSource.volume = Mathf.Lerp(startVolume, 0f, progress);
+                }
+
                 yield return null;
             }
             // 确保完全变黑

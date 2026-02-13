@@ -4,7 +4,7 @@ using UnityEngine;
 /// Swordman 角色控制器（简单版）
 /// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
-[RequireComponent(typeof(Animator))]
+// [RequireComponent(typeof(Animator))] // 已取消强制要求，支持在子物体上挂载 Animator
 public class SwordmanController : MonoBehaviour
 {
     [Header("移动设置")]
@@ -39,7 +39,8 @@ public class SwordmanController : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
+        // 查找 Animator (可能在子物体 Visuals 上)
+        animator = GetComponentInChildren<Animator>();
         
         if (animator == null)
         {
@@ -111,7 +112,10 @@ public class SwordmanController : MonoBehaviour
         if (!isAttacking && moveInput.x != 0)
         {
             Vector3 scale = transform.localScale;
-            scale.x = moveInput.x > 0 ? -1 : 1; // 向右为-1，向左为1（反转）
+            // 假设角色默认朝右
+            // 向右移动 (x > 0) -> scale.x = 1
+            // 向左移动 (x < 0) -> scale.x = -1
+            scale.x = moveInput.x > 0 ? 1 : -1; 
             transform.localScale = scale;
         }
         
@@ -141,6 +145,7 @@ public class SwordmanController : MonoBehaviour
         
         // 设置速度参数（0 = Idle, 1 = Walk/Run）
         float speed = isAttacking ? 0f : moveInput.magnitude;
+        // Debug.Log($"SpineUpdate: Speed={speed}, isAttacking={isAttacking}"); 
         animator.SetFloat(SpeedParam, speed);
     }
 

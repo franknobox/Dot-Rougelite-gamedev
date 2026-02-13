@@ -30,8 +30,16 @@ public class RoomController : MonoBehaviour
     [Tooltip("敌人预制体列表（随机选择）")]
     public List<GameObject> enemyPrefabs = new List<GameObject>();
 
+    // 是否等待触发器（陷阱）才开始刷怪
+    [Header("刷怪机制")]
+    [Tooltip("是否等待触发器激活才生成敌人")]
+    public bool waitForTrigger = false;
+    
     // 是否已经进入过房间
     private bool hasEntered = false;
+
+    // 是否已经开始刷怪
+    private bool isWaveStarted = false;
     
     // 当前房间内的敌人列表
     private List<GameObject> activeEnemies = new List<GameObject>();
@@ -79,7 +87,15 @@ public class RoomController : MonoBehaviour
             case RoomType.Combat:
                 // 战斗房：锁门并生成敌人
                 LockDoors();
-                SpawnEnemies();
+                
+                if (waitForTrigger)
+                {
+                    Debug.Log("房间设置为等待触发，暂不生成敌人");
+                }
+                else
+                {
+                    SpawnEnemies();
+                }
                 break;
 
             case RoomType.Rest:
@@ -193,6 +209,19 @@ public class RoomController : MonoBehaviour
         Debug.Log("所有敌人已被击败！");
         UnlockDoors();
         doorsUnlocked = true;
+    }
+
+    /// <summary>
+    /// 开始刷怪（供外部触发器调用）
+    /// </summary>
+    public void StartWave()
+    {
+        if (roomType != RoomType.Combat) return;
+        if (isWaveStarted) return;
+        
+        Debug.Log("触发器激活，开始刷怪！");
+        SpawnEnemies();
+        isWaveStarted = true;
     }
 
     /// <summary>

@@ -39,11 +39,10 @@ public class EnemyShooterAI : EnemyBase
     // 射击计时器
     private float nextFireTime = 0f;
     
-    // Spine Mecanim组件
     // Animator 参数约定：
     // - Bool "IsMoving": 移动时为 true
     // - Trigger "Attack": 攻击瞬间触发
-    private SkeletonMecanim skeletonMecanim;
+    // private SkeletonMecanim skeletonMecanim; // 已在父类 EnemyBase 中定义
     private Animator anim;
     
     // FirePoint的初始X位置（用于翻转）
@@ -54,8 +53,8 @@ public class EnemyShooterAI : EnemyBase
     {
         base.Start();
 
-        // 获取Spine Mecanim组件（从子物体中查找）
-        skeletonMecanim = GetComponentInChildren<SkeletonMecanim>();
+        // 获取Spine Mecanim组件（父类已处理，这里只需获取Animator）
+        // skeletonMecanim 已在父类 Awake 中赋值
         
         if (skeletonMecanim != null)
         {

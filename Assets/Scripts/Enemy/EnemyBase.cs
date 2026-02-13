@@ -1,5 +1,7 @@
 using System.Collections;
+using System.Collections;
 using UnityEngine;
+using Spine.Unity;
 
 /// <summary>
 /// 敌人基类 - 所有敌人的父类
@@ -38,24 +40,45 @@ public class EnemyBase : MonoBehaviour
     [Tooltip("击杀此敌人获得的分数")]
     protected int scoreValue = 10;
 
+    [Header("音效设置")]
+    [SerializeField]
+    [Tooltip("受击音效（可选）")]
+    protected AudioClip hitSound;
+
+    [SerializeField]
+    [Tooltip("死亡音效（可选）")]
+    protected AudioClip dieSound;
+
     // 当前生命值
     protected float currentHealth;
     
     // 组件引用（从子物体中查找，支持 Enemy/Visuals 分离）
     protected SpriteRenderer spriteRenderer;
+    // Spine支持
+    protected SkeletonMecanim skeletonMecanim;
+    
     private Color originalColor;
+    private Color spineOriginalColor = Color.white; // Spine 默认通常是 White
 
     protected virtual void Awake()
     {
+        // 从子物体中查找 SpriteRenderer（支持 Visuals 分离）
         // 从子物体中查找 SpriteRenderer（支持 Visuals 分离）
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         if (spriteRenderer != null)
         {
             originalColor = spriteRenderer.color;
         }
-        else
+
+        // 尝试查找 Spine 组件
+        skeletonMecanim = GetComponentInChildren<SkeletonMecanim>();
+        if (skeletonMecanim == null)
         {
-            Debug.LogWarning($"{gameObject.name}: 未找到 SpriteRenderer 组件，受击闪白效果将不可用");
+            // 如果两个都没有找到，才报警
+            if (spriteRenderer == null)
+            {
+                Debug.LogWarning($"{gameObject.name}: 未找到 SpriteRenderer 或 SkeletonMecanim 组件，受击闪白效果将不可用");
+            }
         }
     }
 
@@ -88,6 +111,12 @@ public class EnemyBase : MonoBehaviour
         currentHealth -= finalDamage;
         Debug.Log($"{gameObject.name} 当前生命值: {currentHealth}/{maxHealth}");
 
+        // 播放受击音效
+        if (hitSound != null)
+        {
+            AudioSource.PlayClipAtPoint(hitSound, transform.position);
+        }
+
         // 播放受击闪白效果
         StartCoroutine(FlashWhite());
 
@@ -103,16 +132,16 @@ public class EnemyBase : MonoBehaviour
     /// </summary>
     protected virtual IEnumerator FlashWhite()
     {
-        if (spriteRenderer == null) yield break;
-
-        // 变白
-        spriteRenderer.color = Color.white;
+        // 变红 (因为原图通常是白色的，闪白看不出来)
+        if (spriteRenderer != null) spriteRenderer.color = Color.red;
+        if (skeletonMecanim != null) skeletonMecanim.skeleton.SetColor(Color.red);
         
         // 等待
         yield return new WaitForSeconds(flashDuration);
         
         // 恢复原色
-        spriteRenderer.color = originalColor;
+        if (spriteRenderer != null) spriteRenderer.color = originalColor;
+        if (skeletonMecanim != null) skeletonMecanim.skeleton.SetColor(spineOriginalColor);
     }
 
     /// <summary>
@@ -121,6 +150,12 @@ public class EnemyBase : MonoBehaviour
     protected virtual void Die()
     {
         Debug.Log($"{gameObject.name} 已死亡！");
+
+        // 播放死亡音效
+        if (dieSound != null)
+        {
+            AudioSource.PlayClipAtPoint(dieSound, transform.position);
+        }
 
         // 增加分数
         if (GameOverManager.instance != null)

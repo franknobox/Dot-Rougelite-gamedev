@@ -2152,6 +2152,7 @@ MonoBehaviour:
   settingsPanel: {fileID: 1703945853}
   fadeCanvasGroup: {fileID: 533712808}
   fadeDuration: 2
+  bgmClip: {fileID: 8300000, guid: a76d7f1404466cb4d8a848d5a352427d, type: 3}
 --- !u!1 &2143948519
 GameObject:
   m_ObjectHideFlags: 0

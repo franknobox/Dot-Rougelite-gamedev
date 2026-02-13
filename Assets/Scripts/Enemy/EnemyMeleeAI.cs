@@ -43,7 +43,7 @@ public class EnemyMeleeAI : EnemyBase
     private float lastDamageTime = -999f;
     
     // 动画组件
-    private SkeletonMecanim skeletonMecanim;
+    // private SkeletonMecanim skeletonMecanim; // 已在父类 EnemyBase 中定义
     private Animator anim;
 
     // 状态机变量
@@ -60,8 +60,8 @@ public class EnemyMeleeAI : EnemyBase
         currentState = State.Patrol;
         PickNewPatrolTarget();
 
-        // 获取Spine Mecanim组件
-        skeletonMecanim = GetComponentInChildren<SkeletonMecanim>();
+        // 获取Spine Mecanim组件（父类已处理）
+        // skeletonMecanim = GetComponentInChildren<SkeletonMecanim>();
 
         if (skeletonMecanim != null)
         {

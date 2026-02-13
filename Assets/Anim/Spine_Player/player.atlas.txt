@@ -1,0 +1,90 @@
+
+player.png
+size: 344,526
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+cloak1
+  rotate: false
+  xy: 2, 37
+  size: 164, 87
+  orig: 164, 87
+  offset: 0, 0
+  index: -1
+cloak2
+  rotate: true
+  xy: 2, 126
+  size: 208, 142
+  orig: 209, 147
+  offset: 0, 0
+  index: -1
+cloak3
+  rotate: true
+  xy: 208, 354
+  size: 170, 131
+  orig: 172, 133
+  offset: 1, 1
+  index: -1
+ears
+  rotate: true
+  xy: 168, 47
+  size: 132, 45
+  orig: 134, 47
+  offset: 1, 1
+  index: -1
+face
+  rotate: true
+  xy: 233, 123
+  size: 110, 96
+  orig: 112, 99
+  offset: 1, 1
+  index: -1
+hair
+  rotate: false
+  xy: 2, 336
+  size: 204, 188
+  orig: 207, 191
+  offset: 1, 2
+  index: -1
+hair1
+  rotate: true
+  xy: 233, 235
+  size: 117, 109
+  orig: 117, 110
+  offset: 0, 1
+  index: -1
+leftleg
+  rotate: true
+  xy: 171, 8
+  size: 30, 79
+  orig: 32, 81
+  offset: 1, 1
+  index: -1
+mask
+  rotate: true
+  xy: 146, 181
+  size: 153, 85
+  orig: 155, 87
+  offset: 1, 1
+  index: -1
+rightleg
+  rotate: false
+  xy: 301, 39
+  size: 32, 82
+  orig: 34, 84
+  offset: 1, 1
+  index: -1
+scarf
+  rotate: false
+  xy: 2, 2
+  size: 167, 33
+  orig: 167, 33
+  offset: 0, 0
+  index: -1
+shirt
+  rotate: false
+  xy: 215, 40
+  size: 84, 81
+  orig: 86, 83
+  offset: 1, 1
+  index: -1

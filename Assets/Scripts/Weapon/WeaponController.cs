@@ -35,6 +35,8 @@ public class WeaponController : MonoBehaviour
     public Transform firePoint;
     
     [Header("攻击设置")]
+    [Tooltip("攻击延迟（碰撞体开启前的等待时间）")]
+    public float attackDelay = 0.1f;
     [SerializeField] private float attackDuration = 0.2f;
     
     // 当前耐久度
@@ -117,13 +119,10 @@ public class WeaponController : MonoBehaviour
         // 清空已命中敌人列表
         hitEnemies.Clear();
         
-        // 启用武器碰撞体
+        // 启用武器碰撞体 (使用协程处理延迟和持续时间)
         if (weaponCollider != null)
         {
-            weaponCollider.enabled = true;
-            
-            // 启动协程在攻击持续时间后禁用碰撞体
-            StartCoroutine(DisableWeaponCollider());
+            StartCoroutine(MeleeAttackCoroutine());
         }
         else
         {
@@ -133,6 +132,33 @@ public class WeaponController : MonoBehaviour
         
         // 扣除耐久度
         DecrementDurability();
+    }
+
+    /// <summary>
+    /// 近战攻击协程：延迟 -> 开启碰撞体 -> 持续 -> 关闭碰撞体
+    /// </summary>
+    private IEnumerator MeleeAttackCoroutine()
+    {
+        // 1. 等待攻击延迟 (Wind up)
+        if (attackDelay > 0f)
+        {
+            yield return new WaitForSeconds(attackDelay);
+        }
+
+        // 2. 开启碰撞体
+        if (weaponCollider != null)
+        {
+            weaponCollider.enabled = true;
+        }
+
+        // 3. 等待攻击持续时间 (Active)
+        yield return new WaitForSeconds(attackDuration);
+
+        // 4. 关闭碰撞体
+        if (weaponCollider != null)
+        {
+            weaponCollider.enabled = false;
+        }
     }
 
     /// <summary>
@@ -209,15 +235,7 @@ public class WeaponController : MonoBehaviour
     /// <summary>
     /// 在攻击持续时间后禁用武器碰撞体
     /// </summary>
-    private IEnumerator DisableWeaponCollider()
-    {
-        yield return new WaitForSeconds(attackDuration);
-        
-        if (weaponCollider != null)
-        {
-            weaponCollider.enabled = false;
-        }
-    }
+    // DisableWeaponCollider 已被合并到 MeleeAttackCoroutine 中，可以移除或保留为空
 
     /// <summary>
     /// 碰撞检测 - 当武器碰到敌人时触发（仅用于近战武器）

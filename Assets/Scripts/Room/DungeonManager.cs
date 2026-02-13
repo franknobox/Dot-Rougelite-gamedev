@@ -39,6 +39,18 @@ public class DungeonManager : MonoBehaviour
     // 上一个房间的类型（用于防止连续休息房）
     private RoomType lastRoomType = RoomType.Combat;
 
+    [Header("背景音乐设置")]
+    [Tooltip("播放 BGM 的 AudioSource")]
+    public AudioSource bgmAudioSource;
+    [Tooltip("战斗时的 BGM")]
+    public AudioClip combatBGM;
+    [Tooltip("休息时的 BGM")]
+    public AudioClip restBGM;
+    [Tooltip("BGM 切换过渡时间")]
+    public float bgmFadeDuration = 1.0f;
+
+    private Coroutine bgmFadeCoroutine;
+
     private void Awake()
     {
         // 单例模式实现
@@ -149,6 +161,13 @@ public class DungeonManager : MonoBehaviour
         
         currentRoomInstance = Instantiate(selectedRoom);
         Debug.Log($"已加载{roomTypeName}: {selectedRoom.name}");
+
+        // 切换 BGM
+        if (bgmAudioSource != null)
+        {
+            AudioClip targetBGM = isRestRoom ? restBGM : combatBGM;
+            PlayBGM(targetBGM);
+        }
         
         // 记录当前房间类型
         lastRoomType = isRestRoom ? RoomType.Rest : RoomType.Combat;
@@ -182,5 +201,51 @@ public class DungeonManager : MonoBehaviour
         
         // 释放加载锁
         isLoadingRoom = false;
+    }
+
+    /// <summary>
+    /// 播放 BGM (带淡入淡出)
+    /// </summary>
+    public void PlayBGM(AudioClip clip)
+    {
+        if (clip == null || bgmAudioSource == null) return;
+        
+        // 如果正在播放同一首曲子，则不切换
+        if (bgmAudioSource.clip == clip && bgmAudioSource.isPlaying) return;
+
+        if (bgmFadeCoroutine != null) StopCoroutine(bgmFadeCoroutine);
+        bgmFadeCoroutine = StartCoroutine(CrossFadeBGM(clip));
+    }
+
+    private IEnumerator CrossFadeBGM(AudioClip newClip)
+    {
+        float timer = 0f;
+        float startVolume = bgmAudioSource.volume;
+
+        // 淡出
+        if (bgmAudioSource.isPlaying)
+        {
+            while (timer < bgmFadeDuration / 2)
+            {
+                timer += Time.deltaTime;
+                bgmAudioSource.volume = Mathf.Lerp(startVolume, 0f, timer / (bgmFadeDuration / 2));
+                yield return null;
+            }
+        }
+
+        // 切换 Clip
+        bgmAudioSource.clip = newClip;
+        bgmAudioSource.Play();
+
+        // 淡入
+        timer = 0f;
+        while (timer < bgmFadeDuration / 2)
+        {
+            timer += Time.deltaTime;
+            bgmAudioSource.volume = Mathf.Lerp(0f, 1f, timer / (bgmFadeDuration / 2)); // 假设最大音量为1
+            yield return null;
+        }
+
+        bgmAudioSource.volume = 1f;
     }
 }

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Spine.Unity;
 
 /// <summary>
 /// 玩家生命值系统
@@ -30,10 +31,15 @@ public class PlayerHealth : MonoBehaviour
 
     // 组件引用
     private SpriteRenderer spriteRenderer;
+    private SkeletonRenderer skeletonRenderer; // Spine 支持
+    private Animator animator;
 
     private void Awake()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        // 查找视觉组件 (可能在子物体 Visuals 上)
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        skeletonRenderer = GetComponentInChildren<SkeletonRenderer>(); // 兼容 SkeletonAnimation 和 SkeletonMecanim
+        animator = GetComponentInChildren<Animator>();
     }
 
     private void Start()
@@ -60,14 +66,24 @@ public class PlayerHealth : MonoBehaviour
                 {
                     spriteRenderer.color = Color.white;
                 }
+                if (skeletonRenderer != null)
+                {
+                    skeletonRenderer.skeleton.SetColor(Color.white);
+                }
             }
             else
             {
                 // 闪烁效果
+                float alpha = Mathf.PingPong(Time.time * 10f, 1f);
+                Color flashColor = new Color(1, 1, 1, alpha);
+                
                 if (spriteRenderer != null)
                 {
-                    float alpha = Mathf.PingPong(Time.time * 10f, 1f);
-                    spriteRenderer.color = new Color(1, 1, 1, alpha);
+                    spriteRenderer.color = flashColor;
+                }
+                if (skeletonRenderer != null)
+                {
+                    skeletonRenderer.skeleton.SetColor(flashColor);
                 }
             }
         }
@@ -129,14 +145,73 @@ public class PlayerHealth : MonoBehaviour
     {
         Debug.Log("玩家死亡！");
         
+        // 播放死亡动画
+        if (animator != null)
+        {
+            animator.SetTrigger("Die");
+        }
+
+        // 禁用玩家控制
+        SwordmanController controller = GetComponent<SwordmanController>();
+        if (controller == null) controller = GetComponentInChildren<SwordmanController>();
+        if (controller != null) controller.enabled = false;
+
+        // 禁用碰撞体
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null) col.enabled = false;
+
+        // 移除刚体物理影响
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        if (rb != null) rb.bodyType = RigidbodyType2D.Static;
+
+        // 启动协程等待动画播完
+        StartCoroutine(WaitAndGameOver());
+    }
+
+    private System.Collections.IEnumerator WaitAndGameOver()
+    {
+        // 默认等待时间（以防获取不到动画时长）
+        float waitTime = 2f;
+
+        if (animator != null)
+        {
+            // 等待一帧，确保 Animator 进入了 Die 状态
+            yield return null;
+            
+            // 获取当前动画状态信息 (Layer 0)
+            AnimatorStateInfo info = animator.GetCurrentAnimatorStateInfo(0);
+            
+            // 如果确实在播放 Die 动画（根据 Tag 或者名字，这里简单判断只要不是 invalid）
+            // 注意：有时切换需要时间，或者 Die 可能是个 BlendTree。
+            // 更稳妥的方式是直接等待一个固定时间，或者检查 clip info。
+            // 这里我们尝试获取当前 clip 长度。
+            
+            if (info.IsName("Die") || info.IsTag("Die"))
+            {
+                waitTime = info.length;
+            }
+            else
+            {
+                // 如果还没切换过去（Transition中），尝试获取下一个状态信息
+                AnimatorStateInfo nextInfo = animator.GetNextAnimatorStateInfo(0);
+                if (nextInfo.IsName("Die") || nextInfo.IsTag("Die"))
+                {
+                    waitTime = nextInfo.length;
+                }
+            }
+        }
+
+        Debug.Log($"等待死亡动画播放: {waitTime} 秒");
+        yield return new WaitForSeconds(waitTime);
+
         // 触发游戏结束
         if (GameOverManager.instance != null)
         {
             GameOverManager.instance.GameOver();
         }
-        
-        // 销毁玩家物体 (或者让他只是隐藏/禁用控制)
-        Destroy(gameObject);
+
+        // 销毁玩家物体 (可选，如果不想让尸体留在结算界面后)
+        // Destroy(gameObject);
     }
 
     /// <summary>
