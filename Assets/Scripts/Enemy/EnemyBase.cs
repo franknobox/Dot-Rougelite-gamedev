@@ -51,7 +51,7 @@ public class EnemyBase : MonoBehaviour
 
     [Tooltip("音效音量 (0-1)")]
     [Range(0f, 1f)]
-    protected float soundVolume = 1.0f;
+    public float soundVolume = 0.5f;
 
     // 当前生命值
     protected float currentHealth;
@@ -118,8 +118,18 @@ public class EnemyBase : MonoBehaviour
         // 播放受击音效
         if (hitSound != null)
         {
-            // 在摄像机位置播放以避免衰减
-            Vector3 playPos = Camera.main != null ? Camera.main.transform.position : transform.position;
+            // 尝试找 AudioListener, 如果找不到则使用 Camera.main, 再找不到用自身位置
+            Vector3 playPos = transform.position;
+            AudioListener listener = FindObjectOfType<AudioListener>();
+            if (listener != null) 
+            {
+                playPos = listener.transform.position;
+            }
+            else if (Camera.main != null)
+            {
+                playPos = Camera.main.transform.position;
+            }
+            
             AudioSource.PlayClipAtPoint(hitSound, playPos, soundVolume);
         }
 
@@ -160,7 +170,11 @@ public class EnemyBase : MonoBehaviour
         // 播放死亡音效
         if (dieSound != null)
         {
-            Vector3 playPos = Camera.main != null ? Camera.main.transform.position : transform.position;
+            Vector3 playPos = transform.position;
+            AudioListener listener = FindObjectOfType<AudioListener>();
+            if (listener != null) playPos = listener.transform.position;
+            else if (Camera.main != null) playPos = Camera.main.transform.position;
+
             AudioSource.PlayClipAtPoint(dieSound, playPos, soundVolume);
         }
 

@@ -18,7 +18,7 @@ public class Trap : MonoBehaviour
     
     [Tooltip("音效音量 (0-1)")]
     [Range(0f, 1f)]
-    public float soundVolume = 1.0f;
+    public float soundVolume = 0.5f;
 
     [Header("破坏属性")]
     [Tooltip("是否可被玩家破坏")]

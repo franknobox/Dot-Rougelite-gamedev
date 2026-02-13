@@ -274,6 +274,7 @@ MonoBehaviour:
   scoreValue: 10
   hitSound: {fileID: 8300000, guid: fd0acc2888d53304192ab4e6c35f0d57, type: 3}
   dieSound: {fileID: 0}
+  soundVolume: 0.5
   currentState: 0
   patrolRange: 2.97
   detectionRange: 5.5

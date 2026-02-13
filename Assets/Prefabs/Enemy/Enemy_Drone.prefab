@@ -80,7 +80,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDrag: 0
+  m_LinearDrag: 0.1
   m_AngularDrag: 0.05
   m_GravityScale: 0
   m_Material: {fileID: 0}
@@ -123,10 +123,10 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.033378124, y: -0.05340424}
+  m_Offset: {x: -0.06622839, y: 0.7056665}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -137,7 +137,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.6275063, y: 0.9198937}
+  m_Size: {x: 2.2663622, y: 1.4076225}
   m_EdgeRadius: 0
 --- !u!114 &6989048909562749399
 MonoBehaviour:
@@ -158,6 +158,9 @@ MonoBehaviour:
   dropCount: 1
   flashDuration: 0.1
   scoreValue: 10
+  hitSound: {fileID: 0}
+  dieSound: {fileID: 0}
+  soundVolume: 0.5
   projectilePrefab: {fileID: 3591114223977474359, guid: 02b15631bed36c04a9c2f7f5018041d4, type: 3}
   firePoint: {fileID: 2013897002394129166}
   shootingRange: 8

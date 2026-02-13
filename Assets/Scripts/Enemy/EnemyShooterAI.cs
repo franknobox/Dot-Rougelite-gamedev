@@ -49,9 +49,18 @@ public class EnemyShooterAI : EnemyBase
     private float firePointInitialX;
     private bool firePointInitialized = false;
 
+    // 物理组件
+    private Rigidbody2D rb;
+
     protected override void Start()
     {
         base.Start();
+        
+        rb = GetComponent<Rigidbody2D>();
+        if (rb == null)
+        {
+            Debug.LogWarning($"{gameObject.name}: 未找到 Rigidbody2D 组件，建议添加以获得更好的物理表现。");
+        }
 
         // 获取Spine Mecanim组件（父类已处理，这里只需获取Animator）
         // skeletonMecanim 已在父类 Awake 中赋值
@@ -93,27 +102,25 @@ public class EnemyShooterAI : EnemyBase
     private void Update()
     {
         // 如果找不到玩家，不执行 AI
-        if (player == null)
-        {
-            // 停止移动动画
-            if (anim != null)
-            {
-                // anim.SetBool("IsMoving", false);
-            }
-            return;
-        }
-
+        if (player == null) return;
+        
         // 计算与玩家的距离
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
 
-        // 移动逻辑
-        HandleMovement(distanceToPlayer);
-
-        // 射击逻辑
+        // 射击逻辑 (保持在 Update，因为涉及冷却和动画触发，不需要物理同步)
         HandleShooting(distanceToPlayer);
 
-        // 面向玩家
+        // 面向玩家 (视觉更新，放在 Update 较平滑)
         FacePlayer();
+    }
+
+    private void FixedUpdate()
+    {
+        if (player == null) return;
+
+        // 移动逻辑放在 FixedUpdate 以配合物理系统
+        float distanceToPlayer = Vector2.Distance(transform.position, player.position);
+        HandleMovement(distanceToPlayer);
     }
 
     /// <summary>
@@ -128,16 +135,31 @@ public class EnemyShooterAI : EnemyBase
         if (distanceToPlayer > shootingRange)
         {
             // 距离太远，靠近玩家
-            Vector2 newPos = Vector2.MoveTowards(currentPos, targetPos, moveSpeed * Time.deltaTime);
-            transform.position = newPos;
+            // Vector2 newPos = Vector2.MoveTowards(currentPos, targetPos, moveSpeed * Time.deltaTime);
+            // transform.position = newPos;
+            
+            // 使用 Rigidbody 移动
+            Vector2 direction = (targetPos - currentPos).normalized;
+            MoveEnemy(direction, moveSpeed);
             shouldMove = true;
         }
         else if (distanceToPlayer < keepDistance && retreatWhileShooting)
         {
             // 距离太近，后退
-            Vector2 newPos = Vector2.MoveTowards(currentPos, targetPos, -moveSpeed * 0.5f * Time.deltaTime);
-            transform.position = newPos;
+            // Vector2 newPos = Vector2.MoveTowards(currentPos, targetPos, -moveSpeed * 0.5f * Time.deltaTime);
+            // transform.position = newPos;
+            
+            Vector2 direction = (currentPos - targetPos).normalized; // 反向
+            MoveEnemy(direction, moveSpeed * 0.5f);
             shouldMove = true;
+        }
+        else
+        {
+            // 停止移动
+             if (rb != null)
+            {
+                rb.velocity = Vector2.zero;
+            }
         }
         // 在 keepDistance 和 shootingRange 之间时，停止移动
         
@@ -145,6 +167,25 @@ public class EnemyShooterAI : EnemyBase
         if (anim != null)
         {
             // anim.SetBool("IsMoving", shouldMove);
+            // 如果使用 Spine 的 Animator，可能需要设置 Speed 参数
+            // anim.SetFloat("Speed", shouldMove ? 1f : 0f);
+        }
+    }
+
+    private void MoveEnemy(Vector2 direction, float speed)
+    {
+        if (rb != null)
+        {
+            // 使用 MovePosition 会更强硬 (坦克感觉)，不容易被推开，但需要计算 delta
+            rb.MovePosition(rb.position + direction * speed * Time.fixedDeltaTime);
+            
+            // 或者使用 Velocity (更符合自然物理)
+            // rb.velocity = direction * speed;
+        }
+        else
+        {
+            // 降级回 Transform 移动
+             transform.position += (Vector3)(direction * speed * Time.fixedDeltaTime);
         }
     }
 

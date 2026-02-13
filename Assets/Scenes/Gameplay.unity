@@ -1604,7 +1604,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u5F3A\u529B\u914D\u4EF6 \u795D\u60A8\u542F\u7A0B"
+  m_text: "\u5F3A\u529B\u914D\u4EF6 \u52A9\u529B\u542F\u7A0B"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e63dae973e0787845a3bb28796403096, type: 2}
   m_sharedMaterial: {fileID: 6111439452842949199, guid: e63dae973e0787845a3bb28796403096, type: 2}
@@ -3680,9 +3680,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   showConsole: 1
   maxLogCount: 30
-  fontSize: 16
+  fontSize: 20
   widthRatio: 0.3
-  heightRatio: 0.125
+  heightRatio: 0.1
 --- !u!1 &1715229014
 GameObject:
   m_ObjectHideFlags: 0

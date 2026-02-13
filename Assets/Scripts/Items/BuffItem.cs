@@ -19,6 +19,10 @@ public class BuffItem : MonoBehaviour
     [Header("视觉/听觉反馈")]
     [Tooltip("拾取音效")]
     public AudioClip pickupSound;
+    
+    [Tooltip("音效音量 (0-1)")]
+    [Range(0f, 1f)]
+    public float soundVolume = 0.5f;
 
     [Tooltip("拾取特效预制体")]
     public GameObject pickupEffect;
@@ -52,7 +56,20 @@ public class BuffItem : MonoBehaviour
                 // 播放音效
                 if (pickupSound != null)
                 {
-                    AudioSource.PlayClipAtPoint(pickupSound, transform.position);
+                    // 优先寻找听者位置，确保通过 2D/3D 混合或纯位置播放能被听到
+                    Vector3 playPos = transform.position;
+                    AudioListener listener = FindObjectOfType<AudioListener>();
+                    if (listener != null)
+                    {
+                         playPos = listener.transform.position;
+                    }
+                    else if (Camera.main != null)
+                    {
+                         playPos = Camera.main.transform.position;
+                    }
+                    
+                    // 只要位置重合，PlayClipAtPoint 就会以最大音量播放（且不受 3D 衰减影响太大，因为距离为0）
+                    AudioSource.PlayClipAtPoint(pickupSound, playPos, soundVolume);
                 }
 
                 // 播放特效
