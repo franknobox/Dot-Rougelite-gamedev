@@ -45,8 +45,22 @@ public class WeaponController : MonoBehaviour
     // 当前攻击已命中的敌人列表（防止重复伤害，仅用于近战）
     private List<EnemyBase> hitEnemies = new List<EnemyBase>();
 
+    // Buff系统引用
+    private PlayerBuffs playerBuffs;
+
     private void Awake()
     {
+        // 获取 PlayerBuffs 引用 (通常在父物体 Player 上)
+        playerBuffs = GetComponentInParent<PlayerBuffs>();
+        if (playerBuffs == null)
+        {
+            // 如果不在父物体上，尝试在当前物体或子物体找（比如手持的情况）
+            playerBuffs = GetComponent<PlayerBuffs>();
+            if (playerBuffs == null && transform.root != null)
+            {
+                playerBuffs = transform.root.GetComponent<PlayerBuffs>();
+            }
+        }
         // 只有近战武器需要禁用碰撞体
         if (attackType == WeaponAttackType.Melee)
         {
@@ -204,7 +218,9 @@ public class WeaponController : MonoBehaviour
         if (projectileController != null)
         {
             // 初始化投射物 (传入 tag 和方向)
-            projectileController.Initialize(weaponData, fireDirection);
+            // 计算最终伤害
+            float damageMultiplier = playerBuffs != null ? playerBuffs.damageMultiplier : 1.0f;
+            projectileController.Initialize(weaponData, fireDirection, damageMultiplier);
         }
         else
         {
@@ -271,8 +287,14 @@ public class WeaponController : MonoBehaviour
         
         Debug.Log($"[WeaponController] 命中敌人: {enemy.gameObject.name}, 造成伤害: {weaponData.baseDamage}, 类型: {weaponData.damageType}");
         
+        Debug.Log($"[WeaponController] 命中敌人: {enemy.gameObject.name}, 造成伤害: {weaponData.baseDamage}, 类型: {weaponData.damageType}");
+        
+        // 计算伤害 (应用 Buff)
+        float damageMultiplier = playerBuffs != null ? playerBuffs.damageMultiplier : 1.0f;
+        float finalDamage = weaponData.baseDamage * damageMultiplier;
+
         // 对敌人造成伤害
-        enemy.TakeDamage(weaponData.baseDamage, weaponData.damageType);
+        enemy.TakeDamage(finalDamage, weaponData.damageType);
         
         // 将敌人加入已命中列表
         hitEnemies.Add(enemy);

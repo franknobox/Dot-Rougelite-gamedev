@@ -138,6 +138,34 @@ public class PlayerHealth : MonoBehaviour
         UpdateHealthUI();
     }
 
+
+
+    /// <summary>
+    /// 修改最大生命值 (用于 Buff)
+    /// </summary>
+    /// <param name="amount">增加的数值 (负数则减少)</param>
+    public void ModifyMaxHealth(float amount)
+    {
+        maxHealth += amount;
+        
+        // 增加最大生命值时，通常也增加当前生命值（或者是保持百分比，这里选择直接增加）
+        if (amount > 0)
+        {
+            currentHealth += amount;
+        }
+        else
+        {
+            // 减少最大生命值时，如果当前生命值超过上限，则截断
+            if (currentHealth > maxHealth)
+            {
+                currentHealth = maxHealth;
+            }
+        }
+        
+        Debug.Log($"最大生命值变为: {maxHealth}，当前生命值: {currentHealth}");
+        UpdateHealthUI();
+    }
+
     /// <summary>
     /// 玩家死亡
     /// </summary>

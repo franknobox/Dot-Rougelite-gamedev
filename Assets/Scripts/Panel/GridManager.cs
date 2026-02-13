@@ -180,8 +180,25 @@ public class GridManager : MonoBehaviour
             // 格子是空的：尝试放置 Dot
             if (currentDots > 0)
             {
-                // 资源足够，扣除资源并放置
-                currentDots--;
+                // 检查 Dot 消耗概率 (PlayerBuffs)
+                float consumptionChance = 1.0f;
+                PlayerBuffs buffs = FindObjectOfType<PlayerBuffs>();
+                if (buffs != null)
+                {
+                    consumptionChance = buffs.dotConsumptionChance;
+                }
+
+                // 只有通过概率检定才扣除
+                if (Random.value < consumptionChance)
+                {
+                    currentDots--;
+                    Debug.Log($"资源消耗检定: 消耗 (Chance: {consumptionChance})");
+                }
+                else
+                {
+                    Debug.Log($"资源消耗检定: 免费 (Chance: {consumptionChance})");
+                }
+
                 logicalGrid[x, y] = true;
                 slot.SetFilled(true);
                 

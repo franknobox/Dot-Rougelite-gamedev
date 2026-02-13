@@ -36,11 +36,13 @@ public class ProjectileController : MonoBehaviour
     /// </summary>
     /// <param name="data">武器数据</param>
     /// <param name="direction">飞行方向（归一化向量）</param>
-    public void Initialize(WeaponData data, Vector2 direction)
+    /// <param name="damageMultiplier">伤害倍率 (默认 1.0)</param>
+    public void Initialize(WeaponData data, Vector2 direction, float damageMultiplier = 1.0f)
     {
         // 记录武器数据
         speed = data.projectileSpeed; // 使用专门的 projectileSpeed
-        damage = data.baseDamage;
+        damage = data.baseDamage * damageMultiplier;
+        damageType = data.damageType;
         damageType = data.damageType;
         durabilityCost = 1; // 每个飞镖消耗1点耐久
         

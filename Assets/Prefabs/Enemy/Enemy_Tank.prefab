@@ -272,6 +272,8 @@ MonoBehaviour:
   dropCount: 3
   flashDuration: 0.1
   scoreValue: 10
+  hitSound: {fileID: 8300000, guid: 1f71f58a25c18e94ab70817b66fbd0b6, type: 3}
+  dieSound: {fileID: 8300000, guid: e3c716932771c35439c825ea87ecb0e3, type: 3}
   projectilePrefab: {fileID: 6569605655876894340, guid: e8918868824360946958a3764cbd3c92, type: 3}
   firePoint: {fileID: 6292705752298848281}
   shootingRange: 8

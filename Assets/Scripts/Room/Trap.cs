@@ -15,6 +15,10 @@ public class Trap : MonoBehaviour
     [Header("音效设置")]
     [Tooltip("触发时的音效（可选）")]
     public AudioClip triggerSound;
+    
+    [Tooltip("音效音量 (0-1)")]
+    [Range(0f, 1f)]
+    public float soundVolume = 1.0f;
 
     [Header("破坏属性")]
     [Tooltip("是否可被玩家破坏")]
@@ -64,10 +68,15 @@ public class Trap : MonoBehaviour
     /// </summary>
     private void TriggerTrap()
     {
-        // 播放音效
+        // 播放音效 (在摄像机位置播放以避免距离衰减)
         if (triggerSound != null)
         {
-            AudioSource.PlayClipAtPoint(triggerSound, transform.position);
+            Vector3 playPosition = Camera.main != null ? Camera.main.transform.position : transform.position;
+            // 保持原本的 Z 轴可能有问题，所以直接用 Camera 的位置 (2D 游戏常用技巧)
+            // 或者保留 XY，Z 设为 Camera.Z
+            playPosition.z = -10f; // 假设摄像机在 -10
+
+            AudioSource.PlayClipAtPoint(triggerSound, playPosition, soundVolume);
         }
 
         // 生成销毁特效

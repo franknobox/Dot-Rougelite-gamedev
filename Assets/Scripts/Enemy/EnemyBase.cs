@@ -49,6 +49,10 @@ public class EnemyBase : MonoBehaviour
     [Tooltip("死亡音效（可选）")]
     protected AudioClip dieSound;
 
+    [Tooltip("音效音量 (0-1)")]
+    [Range(0f, 1f)]
+    protected float soundVolume = 1.0f;
+
     // 当前生命值
     protected float currentHealth;
     
@@ -114,7 +118,9 @@ public class EnemyBase : MonoBehaviour
         // 播放受击音效
         if (hitSound != null)
         {
-            AudioSource.PlayClipAtPoint(hitSound, transform.position);
+            // 在摄像机位置播放以避免衰减
+            Vector3 playPos = Camera.main != null ? Camera.main.transform.position : transform.position;
+            AudioSource.PlayClipAtPoint(hitSound, playPos, soundVolume);
         }
 
         // 播放受击闪白效果
@@ -154,7 +160,8 @@ public class EnemyBase : MonoBehaviour
         // 播放死亡音效
         if (dieSound != null)
         {
-            AudioSource.PlayClipAtPoint(dieSound, transform.position);
+            Vector3 playPos = Camera.main != null ? Camera.main.transform.position : transform.position;
+            AudioSource.PlayClipAtPoint(dieSound, playPos, soundVolume);
         }
 
         // 增加分数

@@ -16,8 +16,9 @@ MonoBehaviour:
   icon: {fileID: 6804232914446478613, guid: b852b9315af08ac40bfb961c9b3c28c9, type: 3}
   weaponPrefab: {fileID: 1135024809498430444, guid: e2224f4556b0a3740a81ba093f9677dc, type: 3}
   damageType: 0
-  baseDamage: 3
-  attackRate: 1
+  baseDamage: 5
+  attackRate: 2
+  projectileSpeed: 10
   maxDurability: 25
   shapePattern:
   - {x: 0, y: 0}

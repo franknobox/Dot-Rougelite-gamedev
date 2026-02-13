@@ -17,8 +17,8 @@ MonoBehaviour:
   weaponPrefab: {fileID: 5902475004280316080, guid: 7d739ca7f68f6174daaf51306d97af70, type: 3}
   damageType: 2
   baseDamage: 2
-  attackRate: 1
-  projectileSpeed: 10
+  attackRate: 0.5
+  projectileSpeed: 12
   maxDurability: 15
   shapePattern:
   - {x: -1, y: 0}
