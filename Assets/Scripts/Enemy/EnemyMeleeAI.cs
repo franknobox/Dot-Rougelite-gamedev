@@ -260,13 +260,49 @@ public class EnemyMeleeAI : EnemyBase
     }
 
     /// <summary>
-    /// 选择新的巡逻点
+    /// 选择新的巡逻点（带有地面检测，防止标点到地图外）
     /// </summary>
     private void PickNewPatrolTarget()
     {
-        // 在初始位置周围随机找一个点
-        Vector2 randomPoint = Random.insideUnitCircle * patrolRange;
-        patrolTarget = startPosition + randomPoint;
+        int maxAttempts = 10; // 最多尝试10次找到有效点
+        
+        for (int i = 0; i < maxAttempts; i++)
+        {
+            // 在初始位置周围随机找一个点
+            Vector2 randomPoint = Random.insideUnitCircle * patrolRange;
+            Vector2 candidateTarget = startPosition + randomPoint;
+            
+            // 检测该点是否有效（是否有地面支撑）
+            if (IsPointReachable(candidateTarget))
+            {
+                patrolTarget = candidateTarget;
+                return;
+            }
+        }
+        
+        // 如果所有尝试都失败，使用起始位置作为巡逻点（安全回退）
+        Debug.LogWarning($"{gameObject.name}: 无法找到有效的巡逻点，使用起始位置");
+        patrolTarget = startPosition;
+    }
+    
+    /// <summary>
+    /// 检测一个点是否可到达（检测路径上是否有障碍物）
+    /// </summary>
+    private bool IsPointReachable(Vector2 point)
+    {
+        // 检测从当前位置到目标点之间是否有障碍物
+        Vector2 currentPos = transform.position;
+        float distance = Vector2.Distance(currentPos, point);
+        RaycastHit2D obstacleHit = Physics2D.Raycast(currentPos, (point - currentPos).normalized, distance, LayerMask.GetMask("Ground", "Obstacle"));
+        
+        // 如果路径上有障碍物，说明这个点不可到达
+        if (obstacleHit.collider != null)
+        {
+            return false;
+        }
+        
+        // 没有障碍物，这个点是可到达的
+        return true;
     }
 
     /// <summary>
@@ -374,5 +410,13 @@ public class EnemyMeleeAI : EnemyBase
         // 画出攻击范围（黄色）
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, attackRange);
+        
+        // 画出当前巡逻目标点（青色）
+        if (Application.isPlaying && currentState == State.Patrol)
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawSphere(patrolTarget, 0.3f);
+            Gizmos.DrawLine(transform.position, patrolTarget);
+        }
     }
 }

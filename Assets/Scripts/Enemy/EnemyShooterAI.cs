@@ -130,8 +130,6 @@ public class EnemyShooterAI : EnemyBase
     {
         Vector2 currentPos = transform.position;
         Vector2 targetPos = player.position;
-        bool shouldMove = false;
-
         if (distanceToPlayer > shootingRange)
         {
             // 距离太远，靠近玩家
@@ -141,7 +139,6 @@ public class EnemyShooterAI : EnemyBase
             // 使用 Rigidbody 移动
             Vector2 direction = (targetPos - currentPos).normalized;
             MoveEnemy(direction, moveSpeed);
-            shouldMove = true;
         }
         else if (distanceToPlayer < keepDistance && retreatWhileShooting)
         {
@@ -151,7 +148,6 @@ public class EnemyShooterAI : EnemyBase
             
             Vector2 direction = (currentPos - targetPos).normalized; // 反向
             MoveEnemy(direction, moveSpeed * 0.5f);
-            shouldMove = true;
         }
         else
         {

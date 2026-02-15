@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5888574719178662492}
   - component: {fileID: 6729332073797986390}
   - component: {fileID: 624228918785529903}
+  - component: {fileID: -273719169931922514}
   m_Layer: 0
   m_Name: CPU_Red
   m_TagString: Untagged
@@ -147,4 +148,21 @@ MonoBehaviour:
   buffValue: 1.2
   duration: 30
   pickupSound: {fileID: 8300000, guid: 52320e590bf774734a288886eba557ba, type: 3}
+  soundVolume: 0.5
   pickupEffect: {fileID: 0}
+--- !u!114 &-273719169931922514
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 545489989890633343}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac1e5007fb28f554b82f6842c3b4e605, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  floatAmplitude: 0.15
+  floatSpeed: 3
+  enableRotation: 0
+  rotationSpeed: 50

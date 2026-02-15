@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1174515305226335345}
   - component: {fileID: 9134876169041406572}
   - component: {fileID: 6333818532061461780}
+  - component: {fileID: -2995073174724234634}
   m_Layer: 0
   m_Name: Pickup_Dot
   m_TagString: Untagged
@@ -83,6 +84,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dotAmount: 1
   pickupSound: {fileID: 8300000, guid: 29bde6326b4c34ad8a12da475f79b50a, type: 3}
+--- !u!114 &-2995073174724234634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1640145907824945503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac1e5007fb28f554b82f6842c3b4e605, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  floatAmplitude: 0.15
+  floatSpeed: 3
+  enableRotation: 0
+  rotationSpeed: 50
 --- !u!1 &5301696971350826394
 GameObject:
   m_ObjectHideFlags: 0

@@ -11,7 +11,6 @@ public class ProjectileController : MonoBehaviour
     private float speed;
     private float damage;
     private DamageType damageType;
-    private int durabilityCost;
     
     [Header("自动销毁")]
     [SerializeField] private float lifetime = 5f;
@@ -44,7 +43,6 @@ public class ProjectileController : MonoBehaviour
         damage = data.baseDamage * damageMultiplier;
         damageType = data.damageType;
         damageType = data.damageType;
-        durabilityCost = 1; // 每个飞镖消耗1点耐久
         
         // 设置刚体速度
         if (rb != null)

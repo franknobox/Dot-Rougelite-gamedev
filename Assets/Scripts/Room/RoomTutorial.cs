@@ -16,6 +16,10 @@ public class RoomTutorial : MonoBehaviour
 
     private void Start()
     {
+        // 教程已禁用
+        return;
+
+        /*
         // 如果只显示一次且已经显示过，则跳过
         if (showOnce && hasShown) return;
 
@@ -25,6 +29,7 @@ public class RoomTutorial : MonoBehaviour
             TutorialManager.Instance.ShowTutorial(tutorialContent);
             hasShown = true;
         }
+        */
     }
 
     private void OnDestroy()

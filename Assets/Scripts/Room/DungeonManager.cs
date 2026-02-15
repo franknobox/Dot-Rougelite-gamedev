@@ -57,6 +57,7 @@ public class DungeonManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            transform.parent = null; // 确保是根物体，否则 DontDestroyOnLoad 会报错
             DontDestroyOnLoad(gameObject);
         }
         else

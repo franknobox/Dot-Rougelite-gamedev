@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2797649871422104982}
   - component: {fileID: 902126086730809239}
   - component: {fileID: 5882267580215830533}
+  - component: {fileID: 3252499283334652526}
   m_Layer: 0
   m_Name: Disk
   m_TagString: Untagged
@@ -147,4 +148,21 @@ MonoBehaviour:
   buffValue: 25
   duration: 60
   pickupSound: {fileID: 0}
+  soundVolume: 0.5
   pickupEffect: {fileID: 0}
+--- !u!114 &3252499283334652526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7474878094955737947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac1e5007fb28f554b82f6842c3b4e605, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  floatAmplitude: 0.15
+  floatSpeed: 3
+  enableRotation: 0
+  rotationSpeed: 50

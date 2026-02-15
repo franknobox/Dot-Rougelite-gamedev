@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4465819446116981334}
   - component: {fileID: 1790089763251208817}
   - component: {fileID: 3861235533446051468}
+  - component: {fileID: 511359290219541496}
   m_Layer: 0
   m_Name: RAM
   m_TagString: Untagged
@@ -147,4 +148,21 @@ MonoBehaviour:
   buffValue: 1.5
   duration: 45
   pickupSound: {fileID: 0}
+  soundVolume: 0.5
   pickupEffect: {fileID: 0}
+--- !u!114 &511359290219541496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4833392032250195862}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac1e5007fb28f554b82f6842c3b4e605, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  floatAmplitude: 0.15
+  floatSpeed: 3
+  enableRotation: 0
+  rotationSpeed: 50
